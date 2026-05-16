@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SystemA v.3.1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: rgba(255,255,255,0.03);
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent-cyan: #0096ff;
+            --accent-green: #00ff88;
+            --accent-gold: #ffd700;
+            --border-color: rgba(0,150,255,0.2);
+            --glow-cyan: rgba(0,150,255,0.3);
+            --glow-green: rgba(0,255,136,0.3);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f0f0f8;
+            --bg-secondary: #e0e0f0;
+            --bg-card: rgba(0,0,0,0.03);
+            --text-primary: #1a1a2e;
+            --text-secondary: #555;
+            --border-color: rgba(0,150,255,0.3);
+            --glow-cyan: rgba(0,150,255,0.1);
+            --glow-green: rgba(0,255,136,0.1);
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-animation .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: float 20s infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            25% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+            50% { transform: translateY(-200px) translateX(-50px); opacity: 0.3; }
+            75% { transform: translateY(-100px) translateX(100px); opacity: 0.6; }
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, transparent 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+        
+        .slogan {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+        
+        .theme-toggle:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+        
+        /* Language Selector */
+        .lang-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 15px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .lang-select:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+        
+        .lang-select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 120px 30px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3em;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+        
+        .hero .lang-badge {
+            display: inline-block;
+            padding: 8px 25px;
+            background: linear-gradient(135deg, rgba(0,150,255,0.1), rgba(0,255,136,0.1));
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: var(--accent-cyan);
+            margin-bottom: 30px;
+        }
+        
+        /* System Info Card */
+        .system-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        
+        .system-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 30px var(--glow-cyan);
+        }
+        
+        .system-card h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3em;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .system-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            padding: 15px;
+            background: rgba(0,150,255,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(0,150,255,0.05);
+        }
+        
+        .info-item .label {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .info-item .value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Command Box */
+        .command-box {
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,150,255,0.05));
+            border: 1px solid var(--accent-cyan);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .command-box .cmd-label {
+            font-size: 0.8em;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .command-box .cmd-text {
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            color: var(--accent-gold);
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 5px;
+            word-break: break-all;
+            user-select: all;
+        }
+        
+        .command-box .cmd-hint {
+            font-size: 0.85em;
+            color: #ff4444;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 15px;
+            background: var(--accent-cyan);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+        
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 10px 30px var(--glow-green);
+        }
+        
+        .feature-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1em;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+        
+        .memorial-note {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255,200,0,0.05), rgba(255,150,0,0.05));
+            border-radius: 10px;
+            border: 1px solid rgba(255,200,0,0.2);
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+        
+        .footer .copyright {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 10px 15px; flex-wrap: wrap; gap: 10px; }
+            .logo { font-size: 1.1em; }
+            .slogan { display: none; }
+            .hero h1 { font-size: 2em; }
+            .main-content { padding: 100px 15px 30px; }
+            .system-info { grid-template-columns: 1fr; }
+            .features { grid-template-columns: 1fr; }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">SystemA v.3.1</div>
+            <div class="slogan" id="slogan">Deep Cleaning, Uninterrupted Performance</div>
+        </div>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+            <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="TR">Türkçe</option>
+                <option value="EN" selected>English</option>
+                <option value="DE">Deutsch</option>
+                <option value="FR">Français</option>
+                <option value="ES">Español</option>
+                <option value="PT">Português</option>
+                <option value="RU">Русский</option>
+                <option value="ZH">中文</option>
+                <option value="JA">日本語</option>
+            </select>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero -->
+        <section class="hero">
+            <h1>SystemA v.3.1</h1>
+            <div class="subtitle" id="heroSubtitle">Deep Cleaning, Uninterrupted Performance</div>
+            <div class="lang-badge" id="langBadge">🌐 9 Dilde / In 9 Languages</div>
+        </section>
+        
+        <!-- System Detection -->
+        <div class="system-card">
+            <h2 id="sysDetectTitle">🖥️ Sistem Algılama / System Detection</h2>
+            <div class="system-info">
+                <div class="info-item">
+                    <div class="label" id="osLabel">İşletim Sistemi / Operating System</div>
+                    <div class="value" id="osValue"><span class="loading"></span> Algılanıyor...</div>
+                </div>
+                <div class="info-item">
+                    <div class="label" id="archLabel">Mimari / Architecture</div>
+                    <div class="value" id="archValue"><span class="loading"></span> Algılanıyor...</div>
+                </div>
+                <div class="info-item">
+                    <div class="label" id="hostLabel">Hostname</div>
+                    <div class="value" id="hostValue"><span class="loading"></span> Algılanıyor...</div>
+                </div>
+            </div>
+            
+            <div class="command-box">
+                <div class="cmd-label" id="cmdLabel">📋 Çalıştırılacak Komut / Command to Execute</div>
+                <div class="cmd-text" id="cmdText">cd /d C:\Users\ercan\Desktop\SystemA && SystemA.bat</div>
+                <button class="copy-btn" onclick="copyCommand()" id="copyBtn">📋 Kopyala / Copy</button>
+                <div class="cmd-hint" id="cmdHint">⚠️ Yönetici hakları ile çalıştırın! / Run with administrator privileges!</div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🧹</div>
+                <h3 id="feat1Title">Deep Cleaning</h3>
+                <p id="feat1Desc">Sistem dosyalarını, önbellekleri ve geçici dosyaları temizler / Cleans system files, caches and temporary files</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3 id="feat2Title">System Report</h3>
+                <p id="feat2Desc">Detaylı donanım, yazılım ve ağ bilgilerini raporlar / Reports detailed hardware, software and network info</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🛡️</div>
+                <h3 id="feat3Title">System Health</h3>
+                <p id="feat3Desc">Sistem sağlık skoru (0-100) ile performans değerlendirmesi / Performance evaluation with health score (0-100)</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🌐</div>
+                <h3 id="feat4Title">9 Languages</h3>
+                <p id="feat4Desc">Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔧</div>
+                <h3 id="feat5Title">Multi-Platform</h3>
+                <p id="feat5Desc">Windows, Linux ve macOS için optimize edilmiş motorlar / Optimized engines for Windows, Linux and macOS</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📝</div>
+                <h3 id="feat6Title">Detailed Logging</h3>
+                <p id="feat6Desc">Tüm işlemler kayıt altına alınır ve raporlanır / All operations are logged and reported</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="memorial-note" id="memorialNote">
+            Bu program, yakında kaybettiğimiz ağabeyim Ertuğrul Murat CEVİZ anısına hazırlanmıştır. Allah'tan rahmet diler, tüm ölmüşlerimizin mekanlarının cennet olmasını temmeni ederim. Ruhları şâd olsun, El-Fatiha.
+        </div>
+        <div class="copyright">
+            SystemA v.3.1 &copy; 2026 - <a href="https://ercanceviz.com.tr" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">ercanceviz.com.tr</a>
+        </div>
+    </footer>
+    
+    <script>
+        // Language Data
+        const langData = {
+            TR: {
+                slogan: "Derin Temizlik, Kesintisiz Performans",
+                subtitle: "Derin Temizlik, Kesintisiz Performans",
+                langBadge: "🌐 9 Dilde",
+                sysDetectTitle: "🖥️ Sistem Algılama",
+                osLabel: "İşletim Sistemi",
+                archLabel: "Mimari",
+                hostLabel: "Bilgisayar Adı",
+                cmdLabel: "📋 Çalıştırılacak Komut",
+                copyBtn: "📋 Kopyala",
+                cmdHint: "⚠️ Yönetici hakları ile çalıştırın!",
+                feat1Title: "Derin Temizlik",
+                feat1Desc: "Sistem dosyalarını, önbellekleri ve geçici dosyaları temizler",
+                feat2Title: "Sistem Raporu",
+                feat2Desc: "Detaylı donanım, yazılım ve ağ bilgilerini raporlar",
+                feat3Title: "Sistem Sağlığı",
+                feat3Desc: "Sistem sağlık skoru (0-100) ile performans değerlendirmesi",
+                feat4Title: "9 Dil",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Çoklu Platform",
+                feat5Desc: "Windows, Linux ve macOS için optimize edilmiş motorlar",
+                feat6Title: "Detaylı Kayıt",
+                feat6Desc: "Tüm işlemler kayıt altına alınır ve raporlanır",
+                memorial: "Bu program, yakında kaybettiğimiz ağabeyim Ertuğrul Murat CEVİZ anısına hazırlanmıştır. Allah'tan rahmet diler, tüm ölmüşlerimizin mekanlarının cennet olmasını temmeni ederim. Ruhları şâd olsun, El-Fatiha."
+            },
+            EN: {
+                slogan: "Deep Cleaning, Uninterrupted Performance",
+                subtitle: "Deep Cleaning, Uninterrupted Performance",
+                langBadge: "🌐 In 9 Languages",
+                sysDetectTitle: "🖥️ System Detection",
+                osLabel: "Operating System",
+                archLabel: "Architecture",
+                hostLabel: "Hostname",
+                cmdLabel: "📋 Command to Execute",
+                copyBtn: "📋 Copy",
+                cmdHint: "⚠️ Run with administrator privileges!",
+                feat1Title: "Deep Cleaning",
+                feat1Desc: "Cleans system files, caches and temporary files",
+                feat2Title: "System Report",
+                feat2Desc: "Reports detailed hardware, software and network info",
+                feat3Title: "System Health",
+                feat3Desc: "Performance evaluation with health score (0-100)",
+                feat4Title: "9 Languages",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Multi-Platform",
+                feat5Desc: "Optimized engines for Windows, Linux and macOS",
+                feat6Title: "Detailed Logging",
+                feat6Desc: "All operations are logged and reported",
+                memorial: "This program has been prepared in memory of our brother Ertuğrul Murat CEVİZ, whom we recently lost. May Allah have mercy on him, and may the souls of all our departed find peace in paradise. May their souls be blessed, El-Fatiha."
+            },
+            DE: {
+                slogan: "Tiefenreinigung, Unterbrechungsfreie Leistung",
+                subtitle: "Tiefenreinigung, Unterbrechungsfreie Leistung",
+                langBadge: "🌐 In 9 Sprachen",
+                sysDetectTitle: "🖥️ Systemerkennung",
+                osLabel: "Betriebssystem",
+                archLabel: "Architektur",
+                hostLabel: "Computername",
+                cmdLabel: "📋 Auszuführender Befehl",
+                copyBtn: "📋 Kopieren",
+                cmdHint: "⚠️ Mit Administratorrechten ausführen!",
+                feat1Title: "Tiefenreinigung",
+                feat1Desc: "Reinigt Systemdateien, Caches und temporäre Dateien",
+                feat2Title: "Systembericht",
+                feat2Desc: "Meldet detaillierte Hardware-, Software- und Netzwerkinformationen",
+                feat3Title: "Systemzustand",
+                feat3Desc: "Leistungsbewertung mit Gesundheitswert (0-100)",
+                feat4Title: "9 Sprachen",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Multi-Plattform",
+                feat5Desc: "Optimierte Motoren für Windows, Linux und macOS",
+                feat6Title: "Detaillierte Protokollierung",
+                feat6Desc: "Alle Vorgänge werden protokolliert und gemeldet",
+                memorial: "Dieses Programm wurde zum Gedenken an unseren Bruder Ertuğrul Murat CEVİZ erstellt, den wir kürzlich verloren haben. Möge Allah ihm gnädig sein und mögen die Seelen aller unserer Verstorbenen Frieden im Paradies finden. Mögen ihre Seelen gesegnet sein, El-Fatiha."
+            },
+            FR: {
+                slogan: "Nettoyage en Profondeur, Performances Ininterrompues",
+                subtitle: "Nettoyage en Profondeur, Performances Ininterrompues",
+                langBadge: "🌐 En 9 Langues",
+                sysDetectTitle: "🖥️ Détection du Système",
+                osLabel: "Système d'exploitation",
+                archLabel: "Architecture",
+                hostLabel: "Nom d'hôte",
+                cmdLabel: "📋 Commande à Exécuter",
+                copyBtn: "📋 Copier",
+                cmdHint: "⚠️ Exécuter avec privilèges d'administrateur!",
+                feat1Title: "Nettoyage Profond",
+                feat1Desc: "Nettoie les fichiers système, caches et fichiers temporaires",
+                feat2Title: "Rapport Système",
+                feat2Desc: "Rapporte les informations détaillées matériel, logiciel et réseau",
+                feat3Title: "Santé du Système",
+                feat3Desc: "Évaluation des performances avec score de santé (0-100)",
+                feat4Title: "9 Langues",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Multi-Plateforme",
+                feat5Desc: "Moteurs optimisés pour Windows, Linux et macOS",
+                feat6Title: "Journalisation Détaillée",
+                feat6Desc: "Toutes les opérations sont enregistrées et rapportées",
+                memorial: "Ce programme a été préparé à la mémoire de notre frère Ertuğrul Murat CEVİZ, que nous avons récemment perdu. Qu'Allah lui fasse miséricorde et que les âmes de tous nos défunts trouvent la paix au paradis. Que leurs âmes soient bénies, El-Fatiha."
+            },
+            ES: {
+                slogan: "Limpieza Profunda, Rendimiento Ininterrumpido",
+                subtitle: "Limpieza Profunda, Rendimiento Ininterrumpido",
+                langBadge: "🌐 En 9 Idiomas",
+                sysDetectTitle: "🖥️ Detección del Sistema",
+                osLabel: "Sistema Operativo",
+                archLabel: "Arquitectura",
+                hostLabel: "Nombre del Host",
+                cmdLabel: "📋 Comando a Ejecutar",
+                copyBtn: "📋 Copiar",
+                cmdHint: "⚠️ ¡Ejecutar con privilegios de administrador!",
+                feat1Title: "Limpieza Profunda",
+                feat1Desc: "Limpia archivos del sistema, cachés y archivos temporales",
+                feat2Title: "Informe del Sistema",
+                feat2Desc: "Reporta información detallada de hardware, software y red",
+                feat3Title: "Salud del Sistema",
+                feat3Desc: "Evaluación de rendimiento con puntuación de salud (0-100)",
+                feat4Title: "9 Idiomas",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Multi-Plataforma",
+                feat5Desc: "Motores optimizados para Windows, Linux y macOS",
+                feat6Title: "Registro Detallado",
+                feat6Desc: "Todas las operaciones se registran y reportan",
+                memorial: "Este programa ha sido preparado en memoria de nuestro hermano Ertuğrul Murat CEVİZ, a quien perdimos recientemente. Que Allah tenga misericordia de él, y que las almas de todos nuestros difuntos encuentren la paz en el paraíso. Que sus almas sean bendecidas, El-Fatiha."
+            },
+            PT: {
+                slogan: "Limpeza Profunda, Desempenho Ininterrupto",
+                subtitle: "Limpeza Profunda, Desempenho Ininterrupto",
+                langBadge: "🌐 Em 9 Idiomas",
+                sysDetectTitle: "🖥️ Detecção do Sistema",
+                osLabel: "Sistema Operacional",
+                archLabel: "Arquitetura",
+                hostLabel: "Nome do Host",
+                cmdLabel: "📋 Comando para Executar",
+                copyBtn: "📋 Copiar",
+                cmdHint: "⚠️ Executar com privilégios de administrador!",
+                feat1Title: "Limpeza Profunda",
+                feat1Desc: "Limpa arquivos do sistema, caches e arquivos temporários",
+                feat2Title: "Relatório do Sistema",
+                feat2Desc: "Relata informações detalhadas de hardware, software e rede",
+                feat3Title: "Saúde do Sistema",
+                feat3Desc: "Avaliação de desempenho com pontuação de saúde (0-100)",
+                feat4Title: "9 Idiomas",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Multi-Plataforma",
+                feat5Desc: "Motores otimizados para Windows, Linux e macOS",
+                feat6Title: "Registro Detalhado",
+                feat6Desc: "Todas as operações são registradas e relatadas",
+                memorial: "Este programa foi preparado em memória do nosso irmão Ertuğrul Murat CEVİZ, que perdemos recentemente. Que Allah tenha misericórdia dele, e que as almas de todos os nossos falecidos encontrem paz no paraíso. Que suas almas sejam abençoadas, El-Fatiha."
+            },
+            RU: {
+                slogan: "Глубокая очистка, бесперебойная работа",
+                subtitle: "Глубокая очистка, бесперебойная работа",
+                langBadge: "🌐 На 9 языках",
+                sysDetectTitle: "🖥️ Обнаружение системы",
+                osLabel: "Операционная система",
+                archLabel: "Архитектура",
+                hostLabel: "Имя хоста",
+                cmdLabel: "📋 Команда для выполнения",
+                copyBtn: "📋 Копировать",
+                cmdHint: "⚠️ Запускать с правами администратора!",
+                feat1Title: "Глубокая очистка",
+                feat1Desc: "Очищает системные файлы, кеши и временные файлы",
+                feat2Title: "Отчет системы",
+                feat2Desc: "Сообщает подробную информацию об оборудовании, ПО и сети",
+                feat3Title: "Здоровье системы",
+                feat3Desc: "Оценка производительности с показателем здоровья (0-100)",
+                feat4Title: "9 языков",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "Мультиплатформенность",
+                feat5Desc: "Оптимизированные движки для Windows, Linux и macOS",
+                feat6Title: "Детальное логирование",
+                feat6Desc: "Все операции регистрируются и сообщаются",
+                memorial: "Эта программа подготовлена в память о нашем брате Эртугруле Мурате ДЖЕВИЗ, которого мы недавно потеряли. Да помилует его Аллах, и да обретут души всех наших усопших покой в раю. Да будут благословенны их души, Эль-Фатиха."
+            },
+            ZH: {
+                slogan: "深度清洁，不间断性能",
+                subtitle: "深度清洁，不间断性能",
+                langBadge: "🌐 9种语言",
+                sysDetectTitle: "🖥️ 系统检测",
+                osLabel: "操作系统",
+                archLabel: "架构",
+                hostLabel: "主机名",
+                cmdLabel: "📋 要执行的命令",
+                copyBtn: "📋 复制",
+                cmdHint: "⚠️ 以管理员权限运行！",
+                feat1Title: "深度清洁",
+                feat1Desc: "清理系统文件、缓存和临时文件",
+                feat2Title: "系统报告",
+                feat2Desc: "报告详细的硬件、软件和网络信息",
+                feat3Title: "系统健康",
+                feat3Desc: "通过健康评分（0-100）进行性能评估",
+                feat4Title: "9种语言",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "多平台",
+                feat5Desc: "为Windows、Linux和macOS优化的引擎",
+                feat6Title: "详细日志",
+                feat6Desc: "所有操作都被记录和报告",
+                memorial: "本程序是为了纪念我们最近失去的兄弟 Ertuğrul Murat CEVİZ 而准备的。愿真主怜悯他，愿我们所有逝者的灵魂在天堂得到安宁。愿他们的灵魂得到祝福，El-Fatiha。"
+            },
+            JA: {
+                slogan: "ディープクリーニング、中断のないパフォーマンス",
+                subtitle: "ディープクリーニング、中断のないパフォーマンス",
+                langBadge: "🌐 9言語",
+                sysDetectTitle: "🖥️ システム検出",
+                osLabel: "オペレーティングシステム",
+                archLabel: "アーキテクチャ",
+                hostLabel: "ホスト名",
+                cmdLabel: "📋 実行するコマンド",
+                copyBtn: "📋 コピー",
+                cmdHint: "⚠️ 管理者権限で実行してください！",
+                feat1Title: "ディープクリーニング",
+                feat1Desc: "システムファイル、キャッシュ、一時ファイルをクリーンアップ",
+                feat2Title: "システムレポート",
+                feat2Desc: "詳細なハードウェア、ソフトウェア、ネットワーク情報を報告",
+                feat3Title: "システムヘルス",
+                feat3Desc: "ヘルススコア（0-100）によるパフォーマンス評価",
+                feat4Title: "9言語",
+                feat4Desc: "Türkçe, English, Deutsch, Français, Español, Português, Русский, 中文, 日本語",
+                feat5Title: "マルチプラットフォーム",
+                feat5Desc: "Windows、Linux、macOS向けに最適化されたエンジン",
+                feat6Title: "詳細ログ",
+                feat6Desc: "すべての操作が記録され報告されます",
+                memorial: "このプログラムは、最近亡くなった私たちの兄 Ertuğrul Murat CEVİZ を追悼して作成されました。アッラーのご慈悲がありますように。そして、亡くなったすべての人々の魂が楽園で平安を得られますように。彼らの魂が祝福されますように、エル＝ファティハ。"
+            }
+        };
+        
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme');
+            const btn = document.getElementById('themeToggle');
+            if (theme === 'light') {
+                body.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+        
+        // Language Change
+        function changeLanguage(lang) {
+            const data = langData[lang];
+            if (!data) return;
+            
+            document.getElementById('slogan').textContent = data.slogan;
+            document.getElementById('heroSubtitle').textContent = data.subtitle;
+            document.getElementById('langBadge').textContent = data.langBadge;
+            document.getElementById('sysDetectTitle').textContent = data.sysDetectTitle;
+            document.getElementById('osLabel').textContent = data.osLabel;
+            document.getElementById('archLabel').textContent = data.archLabel;
+            document.getElementById('hostLabel').textContent = data.hostLabel;
+            document.getElementById('cmdLabel').textContent = data.cmdLabel;
+            document.getElementById('copyBtn').textContent = data.copyBtn;
+            document.getElementById('cmdHint').textContent = data.cmdHint;
+            document.getElementById('feat1Title').textContent = data.feat1Title;
+            document.getElementById('feat1Desc').textContent = data.feat1Desc;
+            document.getElementById('feat2Title').textContent = data.feat2Title;
+            document.getElementById('feat2Desc').textContent = data.feat2Desc;
+            document.getElementById('feat3Title').textContent = data.feat3Title;
+            document.getElementById('feat3Desc').textContent = data.feat3Desc;
+            document.getElementById('feat4Title').textContent = data.feat4Title;
+            document.getElementById('feat4Desc').textContent = data.feat4Desc;
+            document.getElementById('feat5Title').textContent = data.feat5Title;
+            document.getElementById('feat5Desc').textContent = data.feat5Desc;
+            document.getElementById('feat6Title').textContent = data.feat6Title;
+            document.getElementById('feat6Desc').textContent = data.feat6Desc;
+            document.getElementById('memorialNote').textContent = data.memorial;
+            
+            localStorage.setItem('lang', lang);
+        }
+        
+        // Copy Command
+        function copyCommand() {
+            const cmdText = document.getElementById('cmdText');
+            navigator.clipboard.writeText(cmdText.textContent).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const original = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => { btn.textContent = original; }, 2000);
+            });
+        }
+        
+        // System Detection
+        function detectSystem() {
+            const osValue = document.getElementById('osValue');
+            const archValue = document.getElementById('archValue');
+            const hostValue = document.getElementById('hostValue');
+            const cmdText = document.getElementById('cmdText');
+            
+            let os = 'Unknown';
+            let arch = 'Unknown';
+            let host = 'Unknown';
+            let command = '';
+            
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            
+            // Detect OS
+            if (userAgent.indexOf('Windows') !== -1) {
+                os = 'Windows';
+                command = 'cd /d C:\\Users\\ercan\\Desktop\\SystemA && SystemA.bat';
+            } else if (userAgent.indexOf('Linux') !== -1) {
+                os = 'Linux';
+                command = 'cd ~/Desktop/SystemA && sudo bash scripts/linux_engine.sh';
+            } else if (userAgent.indexOf('Mac') !== -1 || platform.indexOf('Mac') !== -1) {
+                os = 'macOS';
+                command = 'cd ~/Desktop/SystemA && sudo bash scripts/mac_engine.sh';
+            } else {
+                os = platform;
+                command = 'Please run the appropriate script for your OS';
+            }
+            
+            // Detect Architecture
+            if (userAgent.indexOf('x64') !== -1 || userAgent.indexOf('Win64') !== -1 || platform.indexOf('x86_64') !== -1 || platform.indexOf('MacIntel') !== -1) {
+                arch = 'x64 (64-bit)';
+            } else if (userAgent.indexOf('x86') !== -1 || platform.indexOf('Win32') !== -1) {
+                arch = 'x86 (32-bit)';
+            } else if (platform.indexOf('arm') !== -1 || userAgent.indexOf('arm') !== -1) {
+                arch = 'ARM';
+            } else {
+                arch = 'Unknown';
+            }
+            
+            // Detect Hostname (via WebRTC or fallback)
+            host = window.location.hostname || 'localhost';
+            
+            // Update UI
+            osValue.textContent = os;
+            archValue.textContent = arch;
+            hostValue.textContent = host;
+            cmdText.textContent = command;
+        }
+        
+        // Create animated background particles
+        function createParticles() {
+            const container = document.getElementById('bgAnimation');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.width = (1 + Math.random() * 3) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            detectSystem();
+            
+            // Load saved language
+            const savedLang = localStorage.getItem('lang');
+            if (savedLang && langData[savedLang]) {
+                document.getElementById('langSelect').value = savedLang;
+                changeLanguage(savedLang);
+            }
+        });
+    </script>
+</body>
+</html>
